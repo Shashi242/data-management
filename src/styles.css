@@ -1,0 +1,87 @@
+/* You can add global styles to this file, and also import other style files */
+.sidenavbar_main1{
+    height: 100vh;
+}
+
+.sidenavbar_main{
+    height: 100%;
+    width: 16%;
+}
+
+.sidebar_list li{
+    width: 100%;
+}
+
+.chkbox_dropdown{
+    width: 20% !important;
+}
+.rowscolumn{
+    width: 18rem;
+    /* background-color: aqua; */
+}
+
+.rowscolumn select{
+    height: 2.3rem !important;
+    width: 22%;
+    color: rgb(97, 97, 97);
+}
+
+.data_manage_page{
+    height: 100vh;
+}
+
+.left, .ryt{
+    height: 100vh;
+}
+
+.data_table{
+    width: 60rem !important;
+    /* height: 50% !important; */
+    /* overflow-y: auto; */
+}
+
+.borderendclr{
+    border-right: solid 1px rgb(170, 167, 167);
+}
+
+.filterdivparent{
+    height: 2.3rem;
+}
+
+.filterdiv{
+    cursor: pointer !important;
+}
+
+.dataInp{
+    width: 6rem;
+    font-size: 0.8rem;
+}
+
+.side_btn{
+    font-size: 10px;
+}
+
+.popupform{
+    position: absolute !important;
+}
+
+.popupform2{
+    background-color: rgba(94, 100, 100, 0.719);
+}
+
+.dob{
+    font-size: 13px;
+}
+
+/* .data_table th,td{
+    border: solid 1px gray !important;
+} */
+
+
+
+/* Dropdown with Checkbox */
+
+.dropdown-menu {
+    max-height: 150px;
+    overflow-y: auto;
+  }

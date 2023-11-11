@@ -1,0 +1,27 @@
+<div class="w-50 ms-auto me-auto mt-5">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="p-5 rounded popupform2 border text-light">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Name</label>
+                    <input type="text" value={{userDetail.name}} #name (change)="updateName(name.value)" class="form-control" id="exampleInputEmail1"
+                        aria-describedby="emailHelp">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Contact</label>
+                    <input type="text" [required]="true" value={{userDetail.contact}} #contact (change)="updateCon(contact.value)" class="form-control" id="exampleInputPassword1">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Age</label>
+                    <input type="number" required="true" value={{userDetail.age}} #age (change)="updateAge(age.value)" class="form-control" id="exampleInputPassword1">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Date of Birth</label>
+                    <input type="text" value={{userDetail.dob}} #dob (change)="updateDob(dob.value)" class="form-control" id="exampleInputPassword1">
+                </div>
+                <button type="submit" data-bs-dismiss="modal" aria-label="Close" class="btn btn-primary"><a (click)="submitFun()" [routerLink]="['/']" class="text-decoration-none text-light">Save</a></button>
+                <button type="button" class="btn btn-primary ms-2" data-bs-dismiss="modal" aria-label="Close"><a [routerLink]="['/']" class="text-decoration-none text-light">Cancel</a></button>
+            </form>
+        </div>
+    </div>
+</div>

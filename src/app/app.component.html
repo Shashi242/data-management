@@ -1,0 +1,16 @@
+<div class="d-flex justify-content-between sidenavbar_main1">
+<div class="bg-primary d-flex flex-column align-items-center pt-5 sidenavbar_main overflow-y-auto">
+    <!-- <h5 class="border p-2">Data Manage</h5> -->
+    <nav>
+        <ul class="list-unstyled d-flex flex-column sidebar_list align-items-center">
+            <li class="my-4 fs-5 text-light border w-100 d-flex justify-content-center rounded p-2 btn cursor-pointer">
+                <a [routerLink]="['']" class="text-decoration-none text-white">Data Manage</a>
+            </li>
+            <li class="my-4 fs-5 text-light border d-flex justify-content-center w-100 rounded p-2 btn cursor-pointer"><a class="text-decoration-none text-light" [routerLink]="['/addnewuser','newuser']">Add new user</a></li>
+        </ul>
+    </nav>
+</div>
+<div class="w-100 overflow-y-auto">
+<router-outlet></router-outlet>
+</div>
+</div>
