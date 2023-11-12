@@ -28,8 +28,8 @@ export class DataManageComponent implements OnInit {
   tableSize: number = 7
   tableSizes: any = [5, 10, 15, 20]
 
-  onTableDataChange(event: any){
-    console.log("pageChange",event);
+  onTableDataChange(event: any) {
+    console.log("pageChange", event);
     this.page = event
   }
   onTableSizeChange(event: any) {
@@ -120,8 +120,8 @@ export class DataManageComponent implements OnInit {
 
   }
 
-  rowsCount:any = []
-  rowsNum:any = 1;
+  rowsCount: any = []
+  rowsNum: any = 1;
 
   newData: any
   async loadData() {
@@ -152,27 +152,27 @@ export class DataManageComponent implements OnInit {
     this.columnDropdownList = [
       {
         item_id: 1,
-        item_text: "Contact", 
+        item_text: "Contact",
       },
       {
         item_id: 2,
-        item_text: "Age", 
+        item_text: "Age",
       },
       {
         item_id: 3,
-        item_text: "Date of Birth", 
+        item_text: "Date of Birth",
       },
     ]
 
     this.commonService.commonMessage.subscribe(data => {
-      if(Array.isArray(data)){
+      if (Array.isArray(data)) {
         this.allDatas = data;
       }
-      else{
+      else {
         console.log("new user added 1...");
         this.newData = data;
         this.allDatas = this.allDatas.map((val: any) => {
-          if (val.id === this.newData.id){
+          if (val.id === this.newData.id) {
             return this.newData
           }
           else {
@@ -183,19 +183,52 @@ export class DataManageComponent implements OnInit {
     });
   };
 
-  changeRows(val:any){
+  changeRows(val: any) {
 
-    if(val !== "Rows"){
-    let countnum = 0;
-    this.allDatas = [];
-    this.allData2.map((data:any)=>{
-      if(countnum<parseInt(val)){
-        countnum++;
-        this.allDatas.push(data);
+    if (val !== "Rows") {
+
+      if (this.dataTypee === "All") {
+        let countnum = 0;
+        this.allDatas = [];
+        this.allData2.map((data: any) => {
+          if (countnum < parseInt(val) && data.delete === false) {
+            countnum++;
+            this.allDatas.push(data);
+          }
+        })
       }
-    })
-    console.log("all datas... ",this.allDatas);
-  }
+      else if (this.dataTypee === "Deleted") {
+        let countnum = 0;
+        this.allDatas = [];
+        this.allData2.map((data: any) => {
+          if (countnum < parseInt(val) && data.delete === true) {
+            countnum++;
+            this.allDatas.push(data);
+          }
+        })
+      }
+
+    }
+    else{
+
+      if (this.dataTypee === "All"){
+        this.allDatas = [];
+        this.allData2.map((data: any) => {
+          if (data.delete === false){
+            this.allDatas.push(data);
+          }
+        })
+      }
+      else if (this.dataTypee === "Deleted"){
+        this.allDatas = [];
+        this.allData2.map((data: any) => {
+          if (data.delete === true){
+            this.allDatas.push(data);
+          }
+        })
+      }
+
+    }
 
   }
 
@@ -222,19 +255,19 @@ export class DataManageComponent implements OnInit {
     this.allDatas = this.newArray;
     if (this.newArray.length === 0) {
 
-      if(this.dataTypee === "All"){
+      if (this.dataTypee === "All") {
         this.allDatas = []
         this.allData2.map((data: any) => {
           if (data.delete === false) {
-             this.allDatas.push(data);
+            this.allDatas.push(data);
           }
         });
       }
-      else if(this.dataTypee === "Deleted"){
+      else if (this.dataTypee === "Deleted") {
         this.allDatas = []
         this.allData2.map((data: any) => {
           if (data.delete === true) {
-             this.allDatas.push(data);
+            this.allDatas.push(data);
           }
         });
       }
@@ -246,19 +279,19 @@ export class DataManageComponent implements OnInit {
   }
 
   onSelectAll(items: any) {
-    if(this.dataTypee === "All"){
+    if (this.dataTypee === "All") {
       this.allDatas = []
       this.allData2.map((data: any) => {
         if (data.delete === false) {
-           this.allDatas.push(data);
+          this.allDatas.push(data);
         }
       });
     }
-    else if(this.dataTypee === "Deleted"){
+    else if (this.dataTypee === "Deleted") {
       this.allDatas = []
       this.allData2.map((data: any) => {
         if (data.delete === true) {
-           this.allDatas.push(data);
+          this.allDatas.push(data);
         }
       });
     }
@@ -318,7 +351,7 @@ export class DataManageComponent implements OnInit {
 
   dltDataStr: any
   allDataStr: any
-  showData(val: any){
+  showData(val: any) {
     this.dataTypee = val;
     if (val === "Deleted") {
       this.dropdownList = [];
@@ -392,41 +425,41 @@ export class DataManageComponent implements OnInit {
   }
 
   // hide columns
-  hideContact:boolean = true
-  hideAge:boolean = true
-  hideDob:boolean = true
+  hideContact: boolean = true
+  hideAge: boolean = true
+  hideDob: boolean = true
 
-  onColumnSelect(data:any){
-    if(data.item_id === 1){
+  onColumnSelect(data: any) {
+    if (data.item_id === 1) {
       this.hideContact = false
     }
-    else if(data.item_id === 2){
+    else if (data.item_id === 2) {
       this.hideAge = false
     }
-    else if(data.item_id === 3){
+    else if (data.item_id === 3) {
       this.hideDob = false
     }
   }
 
-  deSelectColumn(data:any){
-    if(data.item_id === 1){
+  deSelectColumn(data: any) {
+    if (data.item_id === 1) {
       this.hideContact = true
     }
-    else if(data.item_id === 2){
+    else if (data.item_id === 2) {
       this.hideAge = true
     }
-    else if(data.item_id === 3){
+    else if (data.item_id === 3) {
       this.hideDob = true
     }
   }
 
-  onSelectAllColumn(data:any){
+  onSelectAllColumn(data: any) {
     this.hideContact = false
     this.hideAge = false
     this.hideDob = false
   }
 
-  deSelectAllColumn(){
+  deSelectAllColumn() {
     this.hideContact = true
     this.hideAge = true
     this.hideDob = true

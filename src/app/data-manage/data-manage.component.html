@@ -46,7 +46,7 @@
             <tbody
                 *ngFor="let data of allDatas | paginate:{itemsPerPage:tableSize,currentPage:page,totalItems:count}; let index=index">
                 <tr *ngIf="dataTypee === 'All'" class="rows">
-                    <th scope="row" class="py-3 ps-4 border-end">{{(page-1)*tableSize+index+1}}</th>
+                    <th scope="row" class="py-3 text-center border-end">{{(page-1)*tableSize+index+1}}</th>
                     <td class="py-3 ps-4 border-end">{{data.name}}</td>
                     <td class="py-3 ps-4 border-end" *ngIf="hideContact">{{data.contact}}</td>
                     <td class="py-3 text-center border-end" *ngIf="hideAge">{{data.age}}</td>
@@ -58,7 +58,7 @@
                     </td>
                 </tr>
                 <tr *ngIf="dataTypee === 'Deleted'" class="rows">
-                    <th scope="row" class="py-3 border-end">{{data.id}}</th>
+                    <th scope="row" class="py-3 text-center border-end">{{(page-1)*tableSize+index+1}}</th>
                     <td class="py-3 ps-4 border-end">{{data.name}}</td>
                     <td class="py-3 ps-4 border-end">{{data.contact}}</td>
                     <td class="py-3 text-center border-end">{{data.age}}</td>
