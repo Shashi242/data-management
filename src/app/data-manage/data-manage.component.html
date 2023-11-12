@@ -1,12 +1,11 @@
 
+
 <div class="pt-3 pb-5 d-flex flex-column data_manage_page align-items-center">
     <div>
 
-        <!-- Data Table -->
-        <div class="d-flex justify-content-between align-items-center px-2">
+        <div class="d-flex justify-content-between align-items-center px-2 py-2 rounded navBar">
 
-            <!-- dropdown with checkBox -->
-            <ng-multiselect-dropdown class="chkbox_dropdown" [placeholder]="'Search Name'" [settings]="dropdownSettings" [data]="dropdownList"
+            <ng-multiselect-dropdown class="chkbox_dropdown text-light" [placeholder]="'Search Name'" [settings]="dropdownSettings" [data]="dropdownList"
             [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)" (onDeSelect)="deSelect($event)" (onSelectAll)="onSelectAll($event)"
             (onDeSelectAll)="deSelectAll()"></ng-multiselect-dropdown>
 
@@ -18,7 +17,7 @@
             </div>
 
             <div class="d-flex align-items-center rowscolumn justify-content-between">
-               <ng-multiselect-dropdown class="w-75" [placeholder]="'Hide Column'" [settings]="columndropdown" [data]="columnDropdownList"
+               <ng-multiselect-dropdown class="w-75 text-light" [placeholder]="'Hide Column'" [settings]="columndropdown" [data]="columnDropdownList"
                [(ngModel)]="columnSelectedItems" (onSelect)="onColumnSelect($event)" (onDeSelect)="deSelectColumn($event)"
                (onSelectAll)="onSelectAllColumn($event)" (onDeSelectAll)="deSelectAllColumn()"></ng-multiselect-dropdown>
 
@@ -32,7 +31,7 @@
             </div>
         </div>
 
-        <!-- table section -->
+
         <table border="2" class="table table-success mt-2 table-striped data_table">
             <thead>
                 <tr>
@@ -47,7 +46,7 @@
             <tbody
                 *ngFor="let data of allDatas | paginate:{itemsPerPage:tableSize,currentPage:page,totalItems:count}; let index=index">
                 <tr *ngIf="dataTypee === 'All'" class="rows">
-                    <th scope="row" class="py-3 border-end">{{(page-1)*tableSize+index+1}}</th>
+                    <th scope="row" class="py-3 ps-4 border-end">{{(page-1)*tableSize+index+1}}</th>
                     <td class="py-3 ps-4 border-end">{{data.name}}</td>
                     <td class="py-3 ps-4 border-end" *ngIf="hideContact">{{data.contact}}</td>
                     <td class="py-3 text-center border-end" *ngIf="hideAge">{{data.age}}</td>
@@ -64,11 +63,6 @@
                     <td class="py-3 ps-4 border-end">{{data.contact}}</td>
                     <td class="py-3 text-center border-end">{{data.age}}</td>
                     <td class="py-3 text-center border-end dob">{{data.dob}}</td>
-                    <!-- <td class="py-3 text-center text-center">
-                        <button type="button" disabled class="border-1 rounded me-2" (click)="editFun(data)"
-                            data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
-                        <button type="button" disabled class="border-1 rounded" (click)="dltData(data)">Delete</button>
-                    </td> -->
                  </tr>
             </tbody>
         </table>

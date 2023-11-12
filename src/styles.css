@@ -30,6 +30,10 @@
     height: 100vh;
 }
 
+.navBar{
+    background-color: rgb(78, 27, 122) !important;
+}
+
 .left, .ryt{
     height: 100vh;
 }
