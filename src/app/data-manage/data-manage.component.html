@@ -23,7 +23,7 @@
                (onSelectAll)="onSelectAllColumn($event)" (onDeSelectAll)="deSelectAllColumn()"></ng-multiselect-dropdown>
 
                <select #rows (change)="changeRows(rows.value)">
-                <option selected disabled>Rows</option>
+                <option selected>Rows</option>
                 <option *ngFor="let i of rowsCount">
                     {{i}}
                 </option>

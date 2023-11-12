@@ -184,14 +184,19 @@ export class DataManageComponent implements OnInit {
   };
 
   changeRows(val:any){
+
+    if(val !== "Rows"){
     let countnum = 0;
     this.allDatas = [];
-    this.allDatas = this.allData2.map((data:any)=>{
+    this.allData2.map((data:any)=>{
       if(countnum<parseInt(val)){
         countnum++;
-        return data;
+        this.allDatas.push(data);
       }
     })
+    console.log("all datas... ",this.allDatas);
+  }
+
   }
 
   newArray: any = [];
@@ -287,9 +292,12 @@ export class DataManageComponent implements OnInit {
       this.dropdownList = [];
       this.allDatas = [];
       this.selectedItems = [];
+      this.rowsNum = 1;
+      this.rowsCount = [];
 
       this.allData2.map((data: any) => {
         if (data.delete === true) {
+          this.rowsCount.push(this.rowsNum++);
           this.allDatas.push(data);
           this.dropdownList = [
             ...this.dropdownList,
@@ -305,9 +313,12 @@ export class DataManageComponent implements OnInit {
       this.dropdownList = [];
       this.allDatas = [];
       this.selectedItems = [];
+      this.rowsNum = 1;
+      this.rowsCount = [];
 
       this.allData2.map((data: any) => {
         if (data.delete === false) {
+          this.rowsCount.push(this.rowsNum++);
           this.allDatas.push(data);
           this.dropdownList = [
             ...this.dropdownList,
