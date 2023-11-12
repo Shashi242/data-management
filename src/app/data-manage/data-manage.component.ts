@@ -221,7 +221,24 @@ export class DataManageComponent implements OnInit {
     this.newArray = this.newArray.filter((data: any) => data.name !== item.item_text);
     this.allDatas = this.newArray;
     if (this.newArray.length === 0) {
-      this.allDatas = this.allData2
+
+      if(this.dataTypee === "All"){
+        this.allDatas = []
+        this.allData2.map((data: any) => {
+          if (data.delete === false) {
+             this.allDatas.push(data);
+          }
+        });
+      }
+      else if(this.dataTypee === "Deleted"){
+        this.allDatas = []
+        this.allData2.map((data: any) => {
+          if (data.delete === true) {
+             this.allDatas.push(data);
+          }
+        });
+      }
+
     }
   }
   deSelectAll() {
@@ -229,7 +246,22 @@ export class DataManageComponent implements OnInit {
   }
 
   onSelectAll(items: any) {
-    this.allDatas = this.allData2
+    if(this.dataTypee === "All"){
+      this.allDatas = []
+      this.allData2.map((data: any) => {
+        if (data.delete === false) {
+           this.allDatas.push(data);
+        }
+      });
+    }
+    else if(this.dataTypee === "Deleted"){
+      this.allDatas = []
+      this.allData2.map((data: any) => {
+        if (data.delete === true) {
+           this.allDatas.push(data);
+        }
+      });
+    }
   }
 
 
