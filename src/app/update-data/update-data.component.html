@@ -1,27 +1,180 @@
-<div class="w-50 ms-auto me-auto mt-5">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form class="p-5 rounded popupform2 border text-light">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Name</label>
-                    <input type="text" value={{userDetail.name}} #name (change)="updateName(name.value)" class="form-control" id="exampleInputEmail1"
-                        aria-describedby="emailHelp">
+<div class="add-data-topnav px-4 d-flex align-items-center">
+    <div class="d-flex justify-content-between align-items-center container">
+        <span class="fw-bold">Add Lead</span>
+        <img src="https://cdn-icons-png.flaticon.com/128/4574/4574395.png" class="w-25 h-25" />
+    </div>
+</div>
+<div class="bg-light d-flex justify-content-between px-5 py-5">
+    <!-- <form class="add-data-form border-end pe-4">
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Name<span class="required"></span></label>
+            <input type="text" value={{userDetail.name}} #name (input)="updateName(name.value)"
+                placeholder="ex.   Shashi Raj" class="form-control" id="exampleInputEmail1"
+                aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Primary Number<span class="required"></span></label>
+            <input type="text" value={{userDetail.contact}} #contact
+                (input)="updateCon(contact.value)" class="form-control" id="exampleInputPassword1">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Age</label>
+            <input type="number" [required]="true" value={{userDetail.age}} oninput="validity.valid||(value='');" #age (input)="updateAge(age.value)"
+                class="form-control" id="exampleInputPassword1">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">City Name</label>
+            <input type="text" value={{userDetail.Address}} placeholder="kkkk" #dob (input)="updateDob(dob.value)" class="form-control"
+                id="exampleInputPassword1">
+        </div>
+    </form> -->
+
+    <form class="add-data-form border-end pe-4">
+
+        <!-- Name Field -->
+
+        <div class="d-flex flex-column align-items-center">
+          <img [src]="userDetail.image?userDetail.image:selectedFileUrl?selectedFileUrl:'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'" alt="Selected Image" width="130" height="130" class="rounded">
+          <div *ngIf="imgSize" class="text-danger">image size should be less than 45kb</div>
+          <div *ngIf="uploadPic" class="text-danger">Please upload profile picture</div>
+          <input type="file" id="profilePic" (change)="onFileSelected($event)" class="mt-2">
+        </div>
+        
+        <!-- <input type="file" (change)="onFileSelected($event)" accept="image/*">
+        <img *ngIf="selectedFileUrl" [src]="URL.createObjectURL(selectedFileUrl)" alt="Selected Image" width="150"> -->
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Name<span class="required"></span>:</label>
+            <input
+              value="{{ userDetail.name }}"
+              type="text"
+              #name
+              (input)="updateName(name.value)"
+              class="form-control"
+              id="name"
+              name="name"
+              required
+              (focus)="nameValidation = true"
+              [ngClass]="{'is-invalid': nameValidation && !userDetail.name}"
+            />
+            <div *ngIf="nameValidation && !userDetail.name" class="invalid-feedback">
+              Name is required.
+            </div>
+          </div>
+          
+
+        <!-- Age Field -->
+        <div class="mb-3">
+            <label for="age" class="form-label">Age<span class="required"></span>:</label>
+            <input
+              type="number"
+              value="{{ userDetail.age }}"
+              #age
+              (input)="updateAge(age.value)"
+              class="form-control"
+              id="age"
+              name="age"
+              required
+              [min]="1"
+              [max]="100"
+              (focus)="ageValidation = true"
+              [ngClass]="{'is-invalid': ageValidation && !userDetail.age || floatVal || (userDetail.age < 1 || userDetail.age > 100)}"
+            />
+            <div *ngIf="ageValidation && !userDetail.age || floatVal || (userDetail.age < 1 || userDetail.age > 100)" class="invalid-feedback">
+              Age must be integer and between 1 to 100.
+            </div>
+          </div>
+          
+          
+
+        <!-- Contact Field -->
+        <div class="mb-3">
+            <label for="contact" class="form-label">Primary number<span class="required"></span>:</label>
+            <input
+              value="{{ userDetail.contact }}"
+              type="text"
+              #contact
+              (input)="updateCon(contact.value)"
+              class="form-control"
+              id="contact"
+              name="contact"
+              required
+              pattern="[0-9]{10}"
+              (focus)="contactValidation = true"
+              [ngClass]="{'is-invalid': contactValidation}"
+            />
+            <div *ngIf="contactValidation" class="invalid-feedback">
+              Contact must be 10 digits.
+            </div>
+          </div>
+
+          <!-- City Feild -->
+
+          <div class="mb-3">
+            <label for="contact" class="form-label">City Name<span class="required"></span>:</label>
+            <input
+              value="{{ userDetail.Address }}"
+              type="text"
+              #address
+              (input)="updateAdd(address.value)"
+              class="form-control"
+              id="address"
+              name="address"
+              required
+              (focus)="cityValidation = true"
+              [ngClass]="{'is-invalid': cityValidation}"
+            />
+            <div *ngIf="cityValidation" class="invalid-feedback">
+              Please fill this
+            </div>
+          </div>
+          
+
+      </form>
+    
+    
+
+    <div class="ps-3 border-start">
+        <span class="form-label">Lead Data Preview</span>
+        <div class="bg-white container mt-3 ps-3 py-2 rounded lead_info">
+            <div class="form-label lead_info_text">Lead Info</div>
+            <div class="fw-bold text-secondary">
+
+                <div class="w-75 my-3 d-flex justify-content-between">
+                    <span>Name:</span>
+                    <span class="fw-normal">{{userDetail.name || '---'}}</span>
                 </div>
-                <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Contact</label>
-                    <input type="text" [required]="true" value={{userDetail.contact}} #contact (change)="updateCon(contact.value)" class="form-control" id="exampleInputPassword1">
+                <div class="w-75 my-3 d-flex justify-content-between">
+                    <span>Primary No:</span>
+                    <span class="fw-normal text-secondary">{{userDetail.contact || '---'}}</span>
                 </div>
-                <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Age</label>
-                    <input type="number" required="true" value={{userDetail.age}} #age (change)="updateAge(age.value)" class="form-control" id="exampleInputPassword1">
+                <div class="w-75 my-3 d-flex justify-content-between">
+                    <span>Age:</span>
+                    <span class="fw-normal">{{userDetail.age || '---'}}</span>
                 </div>
-                <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Date of Birth</label>
-                    <input type="text" value={{userDetail.dob}} #dob (change)="updateDob(dob.value)" class="form-control" id="exampleInputPassword1">
+                <div class="w-75 my-3 d-flex justify-content-between">
+                    <span>City name:</span>
+                    <span class="fw-normal">{{userDetail.Address || '---'}}</span>
                 </div>
-                <button type="submit" data-bs-dismiss="modal" aria-label="Close" class="btn btn-primary"><a (click)="submitFun()" [routerLink]="['/']" class="text-decoration-none text-light">Save</a></button>
-                <button type="button" class="btn btn-primary ms-2" data-bs-dismiss="modal" aria-label="Close"><a [routerLink]="['/']" class="text-decoration-none text-light">Cancel</a></button>
-            </form>
+
+            </div>
         </div>
     </div>
 </div>
+
+<div class="d-flex justify-content-end py-3 pe-4">
+    <button type="button" class="btn me-3 cancel_btn"><a [routerLink]="['/']"
+            class="text-decoration-none text-secondary">Cancel</a></button>
+    <button type="submit" class="btn btn-dark save_btn">
+        <a (click)="onSubmit()" class="text-decoration-none text-light">Save</a>
+    </button>
+</div>
+
+
+<!-- <div class="w-50 ms-auto me-auto mt-5">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            
+        </div>
+    </div>
+</div> -->

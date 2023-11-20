@@ -1,16 +1,28 @@
-<div class="d-flex justify-content-between sidenavbar_main1 bg-warning">
-<div class="bg-primary d-flex flex-column align-items-center pt-5 sidenavbar_main overflow-y-auto">
+<div class="d-flex justify-content-between sidenavbar_main1 overflow-y-auto">
+<div class="d-flex flex-column align-items-center sidenavbar_main overflow-y-auto">
     <!-- <h5 class="border p-2">Data Manage</h5> -->
-    <nav>
+    <div class="w-100 leadRat_logo p-2">
+        <img src="https://leadrat.com/wp-content/uploads/2023/03/Leadrat-Logo-01-e1678623550724-1536x399.png" class="h-100 w-100"/>
+    </div>
+    <nav class="w-100">
         <ul class="list-unstyled d-flex flex-column sidebar_list align-items-center">
-            <li class="my-4 fs-5 text-light border w-100 d-flex justify-content-center rounded p-2 btn cursor-pointer">
-                <a [routerLink]="['']" class="text-decoration-none text-white">Data Manage</a>
+            <li class="mt-4 fs-5 text-light w-100 rounded-0 d-flex justify-content-left py-2 px-3 btn align-items-center dashboard_logo_parent cursor-pointer">
+                <img src="https://cdn-icons-png.flaticon.com/128/1828/1828791.png" [routerLink]="['']" class="dashboard_logo me-3"/>
+                <a [routerLink]="['']" class="text-decoration-none text-white datamanage_text">Manage Data</a>
             </li>
-            <li class="my-4 fs-5 text-light border d-flex justify-content-center w-100 rounded p-2 btn cursor-pointer"><a class="text-decoration-none text-light" [routerLink]="['/addnewuser','newuser']">Add new user</a></li>
+            <li class="mt-2 text-light w-100 d-flex rounded-0 justify-content-left px-3 py-2 btn align-items-center dashboard_logo_parent cursor-pointer">
+                <img src="https://cdn-icons-png.flaticon.com/128/615/615075.png" [routerLink]="['/addnewuser','newuser']" class="add-data-logo me-3"/>
+                <a [routerLink]="['/addnewuser','newuser']" class="text-decoration-none text-white datamanage_text">Add Data</a>
+            </li>
+            <li class="mt-2 text-light w-100 d-flex rounded-0 justify-content-left px-3 py-2 btn align-items-center dashboard_logo_parent cursor-pointer">
+                <img src="https://cdn-icons-png.flaticon.com/128/535/535188.png" [routerLink]="['/addnewuser','newuser']" class="add-data-logo me-3"/>
+                <a [routerLink]="['/maps']" class="text-decoration-none text-white datamanage_text">Map</a>
+            </li>
         </ul>
     </nav>
 </div>
 <div class="w-100 overflow-y-auto">
 <router-outlet></router-outlet>
+<!-- <app-map></app-map> -->
 </div>
 </div>

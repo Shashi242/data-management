@@ -12,5 +12,4 @@ export class CommonService {
     this.commonSubject.next(data);
   }
 
-  // constructor() { }
 }

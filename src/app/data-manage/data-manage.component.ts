@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { IDropdownSettings } from "ng-multiselect-dropdown";
 import { CommonService } from '../common.service';
+import { Store, select } from '@ngrx/store';
+import * as apiActions from '../store/actions';
+import { Observable } from 'rxjs';
+import { AppState, selectLoading } from '../store/reducer';
 
 @Component({
   selector: 'app-data-manage',
@@ -10,8 +13,16 @@ import { CommonService } from '../common.service';
   styleUrls: ['./data-manage.component.css'],
 })
 export class DataManageComponent implements OnInit {
-  // variables for dropDown
 
+  loading$: any;
+
+  // hide columns
+  hideContact: boolean = true
+  hideAge: boolean = true
+  hideDob: boolean = true
+  hiddenColumns: any = []
+
+  // variables for dropDown
   dropdownList: any = []
   selectedItems: any = [];
   dropdownSettings: IDropdownSettings = {}
@@ -20,81 +31,146 @@ export class DataManageComponent implements OnInit {
   columnDropdownList: any = []
   columnSelectedItems: any = [];
 
+  // all datas
+  allDatas: any = []
+  allData2: any;
+  dltedData: any = {}
+
+  newArray: any = [];
+  selectedName: any = [];
+  table1: boolean = false;
+
+  numOfleads: Number = 0;
+  numOfdeletedLeads: Number = 0;
+
+  dataTypee = 'All';
+  apiData: any
+
 
   // variables for pagination
-
   page: number = 1
   count: number = 0
-  tableSize: number = 7
+  tableSize: number = 9
   tableSizes: any = [5, 10, 15, 20]
 
-  onTableDataChange(event: any) {
-    console.log("pageChange", event);
-    this.page = event
-  }
-  onTableSizeChange(event: any) {
-    this.tableSize = event.target.value
-    this.page = 1
+
+  constructor(private commonService: CommonService, private store: Store<any>, private store2: Store<AppState>,) {
+    this.loading$ = this.store2.pipe(select(selectLoading));
+    console.log("Loading data are there...", this.loading$.actionsObserver);
   }
 
-
-  // allDatas: any[] = []; // Your data array
-  dataTypee = 'All'; // Current data type ('All' or 'Deleted')
-
-
-  private apiUrl = 'https://6548ea34dd8ebcd4ab23dfaf.mockapi.io/tendercuts';
-
-  constructor(private formBuilder: FormBuilder, private http: HttpClient, private commonService: CommonService) { }
-
-  editedData: any = {
-    name: String,
-    contact: String,
-    age: Number,
-    dob: String
-  }
-
-  editName(name: any) {
-    this.editedData = {
-      ...this.editedData,
-      name: name
-    }
-  }
-  editCon(con: any) {
-    this.editedData = {
-      ...this.editedData,
-      contact: con
-    }
-  }
-  editAge(age: any) {
-    this.editedData = {
-      ...this.editedData,
-      age: age
-    }
-  }
-  editDob(dob: any) {
-    this.editedData = {
-      ...this.editedData,
-      dob: dob
-    }
-  }
-
-  async datapost(postdata: any) {
-    try {
-      const response = await this.http.put(`${this.apiUrl}/${postdata.id}`, this.editedData).toPromise();
-      console.log('Data updated successfully:', response);
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
-    fetch("https://6548ea34dd8ebcd4ab23dfaf.mockapi.io/tendercuts").then(async (res) => {
-      const data = await res.json();
-      this.allDatas = data;
-    });
-
-  }
-
-  allData2: any;
 
   ngOnInit(): void {
+    // storing data from api to redux
+
+    console.log("ng OnInit called.....");
+    this.store.dispatch(apiActions.loadAPIData());
+
+    this.apiData = this.store.select('api');
+
+    this.apiData.subscribe((data: any) => {
+
+
+      this.allData2 = data.data;
+
+      this.allDatas = [];
+      let dltedLeads = 0;
+      let notDlted = 0;
+      this.dropdownList = [];
+
+
+      if (this.allData2) {
+
+        if (this.dataTypee === "All Leads") {
+
+        if (this.selectedItems.length !== 0) {
+          let count = 0;
+          this.allData2.map((data: any) => {
+            if (data.delete === false) {
+              this.selectedItems.map((item: any) => {
+                if (item.item_id === data.id) {
+                  this.allDatas.push(data);
+                }
+              })
+              count++;
+            }
+          })
+
+          this.numOfleads = count;
+          this.numOfdeletedLeads = this.allData2.length - count;
+          return;
+        }
+
+      }
+
+        // if (this.dataTypee === "Deleted") {
+        //   console.log("asasasas",this.columnSelectedItems);
+
+        //   if (this.columnSelectedItems.length !== 0){
+
+        //     let count = 0;
+        //     this.allData2.map((data: any) => {
+        //       if (data.delete === true){
+        //         this.columnSelectedItems.map((item: any) => {
+        //           if (item.item_id === data.id) {
+        //             this.allDatas.push(data);
+        //           }
+        //         })
+        //         count++;
+        //       }
+        //     })
+        //     this.numOfdeletedLeads = count; 
+        //     this.numOfleads = this.allData2.length - count;
+        //     return;
+
+        //   }
+
+        // }
+
+
+        this.allData2.map((data: any) => {
+          if (data.delete === true) {
+            dltedLeads++;
+          }
+          else if (data.delete == false) {
+            notDlted++;
+          }
+
+          if (this.dataTypee === "All") {
+            if (data.delete === false) {
+              this.allDatas.push(data);
+              // this.rowsCount.push(this.rowsNum++);
+              this.dropdownList = [
+                ...this.dropdownList,
+                {
+                  item_id: data.id,
+                  item_text: data.name,
+                }
+              ]
+            }
+          }
+          else if (this.dataTypee === "Deleted") {
+            if (data.delete === true) {
+              this.allDatas.push(data);
+              // this.rowsCount.push(this.rowsNum++);
+              this.dropdownList = [
+                ...this.dropdownList,
+                {
+                  item_id: data.id,
+                  item_text: data.name,
+                }
+              ]
+            }
+          }
+
+        });
+
+      }
+
+      this.numOfleads = notDlted;
+      this.numOfdeletedLeads = dltedLeads;
+
+    })
 
     this.dropdownSettings = {
       singleSelection: false,
@@ -102,7 +178,7 @@ export class DataManageComponent implements OnInit {
       textField: 'item_text',
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 0,
+      itemsShowLimit: 2,
       allowSearchFilter: true
     };
 
@@ -117,42 +193,13 @@ export class DataManageComponent implements OnInit {
     }
 
     this.loadData();
-
   }
 
-  rowsCount: any = []
-  rowsNum: any = 1;
-
-  newData: any
-  async loadData() {
-    try {
-      const response = await fetch("https://6548ea34dd8ebcd4ab23dfaf.mockapi.io/tendercuts");
-      const data = await response.json();
-      this.allData2 = data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-
-    this.allDatas = [];
-    this.allData2.map((data: any) => {
-      if (data.delete === false) {
-        this.allDatas.push(data);
-        this.rowsCount.push(this.rowsNum++);
-        this.dropdownList = [
-          ...this.dropdownList,
-          {
-            item_id: data.id,
-            item_text: data.name,
-            age: data.age
-          }
-        ]
-      }
-    });
-
+  loadData() {
     this.columnDropdownList = [
       {
         item_id: 1,
-        item_text: "Contact",
+        item_text: "Primary Number",
       },
       {
         item_id: 2,
@@ -163,80 +210,38 @@ export class DataManageComponent implements OnInit {
         item_text: "Date of Birth",
       },
     ]
-
-    this.commonService.commonMessage.subscribe(data => {
-      if (Array.isArray(data)) {
-        this.allDatas = data;
-      }
-      else {
-        console.log("new user added 1...");
-        this.newData = data;
-        this.allDatas = this.allDatas.map((val: any) => {
-          if (val.id === this.newData.id) {
-            return this.newData
-          }
-          else {
-            return val
-          }
-        })
-      }
-    });
+    this.columnSelectedItems = [...this.columnDropdownList];
   };
 
+
+  onTableDataChange(event: any) {
+    this.page = event
+  }
+  onTableSizeChange(event: any) {
+    this.tableSize = event.target.value
+    this.page = 1
+  }
+
+
   changeRows(val: any) {
+    this.page = 1;
 
-    if (val !== "Rows") {
-
-      if (this.dataTypee === "All") {
-        let countnum = 0;
-        this.allDatas = [];
-        this.allData2.map((data: any) => {
-          if (countnum < parseInt(val) && data.delete === false) {
-            countnum++;
-            this.allDatas.push(data);
-          }
-        })
-      }
-      else if (this.dataTypee === "Deleted") {
-        let countnum = 0;
-        this.allDatas = [];
-        this.allData2.map((data: any) => {
-          if (countnum < parseInt(val) && data.delete === true) {
-            countnum++;
-            this.allDatas.push(data);
-          }
-        })
-      }
-
+    if (val !== "All") {
+      this.tableSize = val;
     }
-    else{
-
-      if (this.dataTypee === "All"){
-        this.allDatas = [];
-        this.allData2.map((data: any) => {
-          if (data.delete === false){
-            this.allDatas.push(data);
-          }
-        })
-      }
-      else if (this.dataTypee === "Deleted"){
-        this.allDatas = [];
-        this.allData2.map((data: any) => {
-          if (data.delete === true){
-            this.allDatas.push(data);
-          }
-        })
-      }
-
+    else if (val === "All") {
+      this.tableSize = this.allDatas.length;
+    }
+    else {
+      this.tableSize = 10;
     }
 
   }
 
-  newArray: any = [];
-  selectedName: any = [];
+
 
   onItemSelect(item: any) {
-    // console.log("lauu... "+ JSON.stringify(item));
+    // this.table1 = true;
     this.allData2.map((data2: any) => {
       if (data2.id === item.item_id) {
         this.newArray = [
@@ -245,16 +250,19 @@ export class DataManageComponent implements OnInit {
         ]
       }
     })
-    console.log("Selected Items" + JSON.stringify(this.newArray));
     this.allDatas = this.newArray;
-    console.log("all Data: " + JSON.stringify(this.allDatas));
+    this.page = 1;
+    // this.tableSize = this.allDatas.length;
   }
+
+
   deSelect(item: any) {
-    console.log("Working....")
     this.newArray = this.newArray.filter((data: any) => data.name !== item.item_text);
     this.allDatas = this.newArray;
-    if (this.newArray.length === 0) {
+    this.tableSize = this.allDatas.length;
 
+    if (this.newArray.length === 0) {
+      // this.table1 = false;
       if (this.dataTypee === "All") {
         this.allDatas = []
         this.allData2.map((data: any) => {
@@ -274,11 +282,18 @@ export class DataManageComponent implements OnInit {
 
     }
   }
+
   deSelectAll() {
     this.newArray = [];
+    this.tableSize = 9;
+    // this.table1 = false
   }
 
   onSelectAll(items: any) {
+
+    // this.table1 = true;
+
+
     if (this.dataTypee === "All") {
       this.allDatas = []
       this.allData2.map((data: any) => {
@@ -286,6 +301,9 @@ export class DataManageComponent implements OnInit {
           this.allDatas.push(data);
         }
       });
+      this.newArray = this.allDatas
+      this.page = 1;
+      this.tableSize = this.allDatas.length;
     }
     else if (this.dataTypee === "Deleted") {
       this.allDatas = []
@@ -294,75 +312,65 @@ export class DataManageComponent implements OnInit {
           this.allDatas.push(data);
         }
       });
+      this.newArray = this.allDatas;
+      this.page = 1;
+      this.tableSize = this.allDatas.length;
     }
+
+    this.tableSize = this.allDatas.length;
+
   }
 
 
-  myName: any = "Shashi Raj";
-
-  isTrue: boolean = true;
 
 
-  dataPage() {
-    this.isTrue = true
-  }
 
-  aboutUsPage() {
-    this.isTrue = false
-  }
+  dltData(data: any) {
 
-  changeName() {
-    this.myName = "Banty Raj";
-  }
-
-  allDatas: any = []
-
-  dltedData: any = {}
+    this.selectedItems = this.selectedItems.filter((item: any) => item.item_id !== data.id);
+    // this.allDatas = this.allDatas.filter((item:any) => item.id !== data.id);
 
 
-  async dltData(data: any) {
+    // this.selectedItems = [];
 
     this.dltedData = {
       delete: true
     }
 
-    try {
-      const response = await this.http.put(`${this.apiUrl}/${data.id}`, this.dltedData).toPromise();
-      console.log('Data updated successfully:', response);
-    } catch (error) {
-      console.error('Error updating data:', error);
+    this.store.dispatch(apiActions.putItem({ id: data.id, item: this.dltedData }));
+
+  }
+
+  reStore(data: any) {
+
+    // this.columnSelectedItems = this.columnSelectedItems.filter((item: any) => item.item_id !== data.id);
+    // console.log("kkkkkkk",this.columnSelectedItems)
+
+    this.dltedData = {
+      delete: false
     }
 
-    fetch("https://6548ea34dd8ebcd4ab23dfaf.mockapi.io/tendercuts").then(async (res) => {
-      const data = await res.json();
-      this.allData2 = data;
-      this.allDatas = [];
-      data.map((data: any) => {
-        if (data.delete === false) {
-          this.allDatas.push(data);
-        }
-      })
-      // this.allDatas = data;
-    });
+    this.store.dispatch(apiActions.putItem({ id: data.id, item: this.dltedData }));
+
+
+    // setTimeout(() => {
+    //   this.store.dispatch(apiActions.loadAPIData());
+    // }, 1500)
 
   }
 
   // dataTypee:string = "All";
-
-  dltDataStr: any
-  allDataStr: any
   showData(val: any) {
     this.dataTypee = val;
     if (val === "Deleted") {
+      this.page = 1
       this.dropdownList = [];
       this.allDatas = [];
       this.selectedItems = [];
-      this.rowsNum = 1;
-      this.rowsCount = [];
 
       this.allData2.map((data: any) => {
+
         if (data.delete === true) {
-          this.rowsCount.push(this.rowsNum++);
           this.allDatas.push(data);
           this.dropdownList = [
             ...this.dropdownList,
@@ -375,93 +383,86 @@ export class DataManageComponent implements OnInit {
       });
     }
     else if (val === "All") {
+      this.page = 1;
       this.dropdownList = [];
       this.allDatas = [];
       this.selectedItems = [];
-      this.rowsNum = 1;
-      this.rowsCount = [];
+
 
       this.allData2.map((data: any) => {
         if (data.delete === false) {
-          this.rowsCount.push(this.rowsNum++);
           this.allDatas.push(data);
           this.dropdownList = [
             ...this.dropdownList,
             {
               item_id: data.id,
               item_text: data.name,
-              age: data.age
             }
           ]
         }
       });
+
     }
+
+
   }
 
-  editWin: boolean = false
-  editDataObj: any = {}
 
   editFun(data: any) {
-
-    console.log("data sending: " + data);
     this.commonService.senData(data);
-
-    this.editWin = true;
-    this.editDataObj = data;
-    console.log(this.editDataObj)
   }
 
-  async addNewData() {
-    try {
-      const response = await this.http.post(`${this.apiUrl}`, this.editedData).toPromise();
-      console.log('Data updated successfully:', response);
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
-    fetch("https://6548ea34dd8ebcd4ab23dfaf.mockapi.io/tendercuts").then(async (res) => {
-      const data = await res.json();
-      this.allDatas = data;
-    });
-  }
 
-  // hide columns
-  hideContact: boolean = true
-  hideAge: boolean = true
-  hideDob: boolean = true
 
   onColumnSelect(data: any) {
-    if (data.item_id === 1) {
-      this.hideContact = false
+
+    this.hideContact = false
+    this.hideAge = false
+    this.hideDob = false
+
+    if (!this.hiddenColumns.includes(data.item_id)) {
+      this.hiddenColumns.push(data.item_id);
     }
-    else if (data.item_id === 2) {
-      this.hideAge = false
+    if (this.hiddenColumns.includes(1)) {
+      this.hideContact = true;
     }
-    else if (data.item_id === 3) {
-      this.hideDob = false
+    if (this.hiddenColumns.includes(2)) {
+      this.hideAge = true;
     }
+    if (this.hiddenColumns.includes(3)) {
+      this.hideDob = true;
+    }
+
   }
 
   deSelectColumn(data: any) {
+
     if (data.item_id === 1) {
-      this.hideContact = true
+      this.hideContact = false
+      this.hiddenColumns.splice(this.hiddenColumns.indexOf(data.item_id), 1);
     }
     else if (data.item_id === 2) {
-      this.hideAge = true
+      this.hideAge = false
+      this.hiddenColumns.splice(this.hiddenColumns.indexOf(data.item_id), 1);
     }
     else if (data.item_id === 3) {
-      this.hideDob = true
+      this.hideDob = false
+      this.hiddenColumns.splice(this.hiddenColumns.indexOf(data.item_id), 1);
     }
   }
 
   onSelectAllColumn(data: any) {
-    this.hideContact = false
-    this.hideAge = false
-    this.hideDob = false
+    this.hideContact = true;
+    this.hideAge = true;
+    this.hideDob = true;
+
   }
 
-  deSelectAllColumn() {
-    this.hideContact = true
-    this.hideAge = true
-    this.hideDob = true
+  onUnselectAllColumn() {
+    this.hideContact = false;
+    this.hideAge = false;
+    this.hideDob = false;
+
   }
+
 }

@@ -1,5 +1,98 @@
+<div class="add-data-topnav d-flex align-items-center px-2">
+    <div class="d-flex justify-content-between align-items-center container-fluid">
+        <span class="fw-bold">Manage Data</span>
+        <div class="d-flex align-items-center">
+            <button type="button" [routerLink]="['/addnewuser','newuser']" class="btn text-light add_new_btn d-flex align-items-center justify-content-center me-4">&plus; &nbsp; &nbsp; Add new Data</button>
+            <img src="https://cdn-icons-png.flaticon.com/128/9482/9482602.png" class="login_logo" />
+        </div>
+    </div>
+</div>
+
+<!-- 2nd navbar -->
+<div class="add-data-topnav d-flex bg-light border align-items-center px-2">
+    <div class="d-flex align-items-center container-fluid">
+        <span class="me-3 btn cursor-pointer btnAllleads" (click)="showData('All')">All Leads ({{numOfleads}})</span>
+        <span class="me-3 btn cursor-pointer navdltBtn" (click)="showData('Deleted')" >Deleted ({{numOfdeletedLeads}})</span>
+        <!-- <span class="me-3">New (35)</span> -->
+    </div>
+</div>
+
+<!-- 3rd navbar -->
+<div class="d-flex flex-wrap justify-content-end align-items-center rowscolumnparent py-1">
+
+    <ng-multiselect-dropdown class="chkbox_dropdown text-dark me-2" [placeholder]="'All'" [settings]="dropdownSettings" [data]="dropdownList"
+    [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)" (onDeSelect)="deSelect($event)" (onSelectAll)="onSelectAll($event)"
+    (onDeSelectAll)="deSelectAll()">
+    </ng-multiselect-dropdown>
 
 
+    <div class="d-flex flex-wrap align-items-center rowscolumn">
+       <span class="manage_columntext">Manage Column -</span><ng-multiselect-dropdown class="manage_column me-2 text-dark" [placeholder]="'Manage Columns'" [settings]="columndropdown" [data]="columnDropdownList"
+       [(ngModel)]="columnSelectedItems" (onSelect)="onColumnSelect($event)" (onDeSelect)="deSelectColumn($event)"
+       (onSelectAll)="onSelectAllColumn($event)" (onDeSelectAll)="onUnselectAllColumn()"></ng-multiselect-dropdown>
+
+       <span class="text-secondary">show</span>
+        <select #rows (change)="changeRows(rows.value)" class="ms-1 rounded selectrows">
+            <option selected>All</option>
+            <option *ngFor="let i of [10,20,50,100,500]">
+                {{i}}
+            </option>
+        </select>
+
+    </div>
+</div>
+
+<!-- table section -->
+
+<!-- table 1 -->
+<div class="maincontainer2">
+
+    <table border="2" class="table mt-0 data_table ms-auto me-auto">
+        <thead>
+            <tr>
+                <th scope="col" class="text-center borderendclr">Index</th>
+                <th scope="col" class="ps-3 borderendclr">Lead Name</th>
+                <th scope="col" class="ps-3 borderendclr" *ngIf="hideContact">Primary Number</th>
+                <th scope="col" class="ps-3 borderendclr" *ngIf="hideAge">Age</th>
+                <th scope="col" class="ps-3 borderendclr" *ngIf="hideDob">City</th>
+                <th scope="col" class="ps-3 borderendclr">Actions</th>
+            </tr>
+        </thead>
+        <tbody
+            *ngFor="let data of allDatas | paginate:{itemsPerPage:tableSize,currentPage:page,totalItems:count}; let index=index">
+            <tr *ngIf="dataTypee === 'All'" class="rows">
+                <th scope="row" class="py-2 text-center border-end">{{(page-1)*tableSize+index+1}}</th>
+                <td class="py-2 ps-3 text-secondary border-end">{{data.name}}</td>
+                <td class="py-2 ps-3 text-secondary border-end" *ngIf="hideContact">{{data.contact}}</td>
+                <td class="py-2 ps-3 text-secondary border-end" *ngIf="hideAge">{{data.age}}</td>
+                <td class="py-2 ps-3 text-secondary border-end dob" *ngIf="hideDob">{{data.Address}}</td>
+                <td class="py-2 ps-3 text-secondary text-center">
+                    <img src="https://cdn-icons-png.flaticon.com/128/4476/4476194.png" class="dltbtn me-3" (click)="editFun(data)" [routerLink]="['/update',data.name]"/>
+                    <img src="https://cdn-icons-png.flaticon.com/128/3385/3385570.png" class="dltbtn" (click)="dltData(data)"/>
+                </td>
+            </tr>
+            <tr *ngIf="dataTypee === 'Deleted'" class="rows">
+                <th scope="row" class="py-2 text-center border-end">{{(page-1)*tableSize+index+1}}</th>
+                <td class="py-2 ps-3 text-secondary border-end">{{data.name}}</td>
+                <td class="py-2 ps-3 text-secondary border-end" *ngIf="hideContact">{{data.contact}}</td>
+                <td class="py-2 ps-3 text-secondary border-end" *ngIf="hideAge">{{data.age}}</td>
+                <td class="py-2 ps-3 text-secondary border-end dob" *ngIf="hideDob">{{data.Address}}</td>
+                <td class="py-2 ps-3 text-secondary text-center">
+                    <img src="https://cdn-icons-png.flaticon.com/128/561/561268.png" class="dltbtn" (click)="reStore(data)"/>
+                </td>
+             </tr>
+        </tbody>
+    </table>
+    
+    <div class="d-flex justify-content-end align-items-top me-5">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+        </pagination-controls>
+    </div>
+
+</div>
+
+
+<!-- 
 <div class="pt-3 pb-5 d-flex flex-column data_manage_page align-items-center">
     <div>
 
@@ -73,4 +166,4 @@
         </div>
 
     </div>
-</div>
+</div> -->

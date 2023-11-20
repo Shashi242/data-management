@@ -12,13 +12,22 @@ import { UpdateDataComponent } from './update-data/update-data.component';
 import {NgxPaginationModule} from "ngx-pagination";
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import {FormsModule} from "@angular/forms";
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { apiReducer } from './store/reducer';
+import { ApiEffects } from './store/effects';
+import { ApiService } from './api.service';
+import { ToastrModule } from 'ngx-toastr';
+import { MapComponent } from './map/map.component';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations"
 
 @NgModule({
   declarations: [
     AppComponent,
     DataManageComponent,
     AboutUsComponent,
-    UpdateDataComponent
+    UpdateDataComponent,
+    MapComponent
   ],
   imports: [
     HttpClientModule,
@@ -27,11 +36,13 @@ import {FormsModule} from "@angular/forms";
     ReactiveFormsModule,
     NgxPaginationModule,
     FormsModule,
-    NgMultiSelectDropDownModule.forRoot()
-    // NgMultiSelectDropDownModule.forRoot(),
-    // FormsModule
+    NgMultiSelectDropDownModule.forRoot(),
+    StoreModule.forRoot({api: apiReducer}),
+    EffectsModule.forRoot([ApiEffects]),
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [ApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
